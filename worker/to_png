@@ -1,0 +1,38 @@
+#!/bin/bash
+set -ex
+# TODO: env or default for /public
+filepath="/public"
+
+pdf_to_png () {
+    input_filename="${1}"
+    output_dirname="${2}"
+    input_filepath="${filepath}/${input_filename}"
+    output_dirpath="${3}"
+    echo output_dirpath
+    cd "${output_dirpath}"
+    pdftoppm "${input_filepath}" -png slide
+    cd ..
+    pwd
+    find "${output_dirname}" -name 'slide*.png'
+}
+
+ppt_to_png () {
+    input_filename="${filepath}/${1}"
+    output_dirname="${2}"
+    output_dirpath="${3}"
+    output_filename="$(openssl rand -hex 12).pdf"
+    unoconv -f pdf -o "${output_filename}" "${input_filename}"
+    mv "${output_filename}" "${filepath}"
+    pdf_to_png "${output_filename}" "${output_dirname}" "${output_dirpath}"
+    rm "${filepath}/${output_filename}"
+}
+
+mimetype=$(file --mime-type "${filepath}/${1}")
+if [[ "${mimetype}" == *"pdf"* ]]; then
+    pdf_to_png "${1}" "${2}" "${3}"
+elif [[ "${mimetype}" == *"openxml"* ]] || [[ "${mimetype}" == *"opendocument"* ]]; then
+    ppt_to_png "${1}" "${2}" "${3}"
+else
+    echo "Unsupported ${mimetype}"
+    exit 1
+fi

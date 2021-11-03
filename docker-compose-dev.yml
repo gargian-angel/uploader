@@ -1,0 +1,60 @@
+version: "3.7"
+
+services:
+  pitchdeckclient:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "${REACT_APP_CLIENT_PORT}:3000"
+    depends_on:
+      - pitchdeckserver
+    volumes:
+      - ./client/src:/usr/app/src
+    environment:
+      - REACT_APP_CLIENT_HOST
+      - REACT_APP_CLIENT_PORT
+      - REACT_APP_SERVER_HOST
+      - REACT_APP_SERVER_PORT
+      - REACT_APP_WORKER_HOST
+      - REACT_APP_WORKER_PORT
+  pitchdeckserver:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "${REACT_APP_SERVER_PORT}:${REACT_APP_SERVER_PORT}"
+    depends_on:
+      - mongodb
+    volumes:
+      - ./public:/public
+      - ./server/server.js:/usr/app/server.js
+      - ./server/models:/usr/app/models
+      - ./server/routes:/usr/app/routes
+    environment:
+      - REACT_APP_SERVER_PORT
+  pitchdeckworker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    ports:
+      - "${REACT_APP_WORKER_PORT}:${REACT_APP_WORKER_PORT}"
+    depends_on:
+      - pitchdeckserver
+    volumes:
+      - ./public:/public
+      - ./worker/worker.js:/usr/app/worker.js
+    environment:
+      - REACT_APP_SERVER_HOST
+      - REACT_APP_SERVER_PORT
+      - REACT_APP_WORKER_PORT
+  mongodb:
+    image: mongo
+    ports:
+      - "27017-27019:27017-27019"
+  pitchdecklogs:
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "20004:8080"

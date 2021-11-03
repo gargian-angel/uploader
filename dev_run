@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+docker-compose -f docker-compose-dev.yml up --build -d
+for i in {1..5}; do
+    docker-compose -f docker-compose-dev.yml ps
+    sleep 1
+done
+
+echo "Everything seems fine; use ./dev_watch to tail logs; ./dev_status to track pod status"
+echo "* http://localhost:20000 should serve as your interface into the application"
+echo "* http://localhost:20004 should serve as a web interface into the logs"

@@ -1,0 +1,58 @@
+body {
+  margin: 0;
+}
+
+.App {
+  font-family: sans-serif;
+  text-align: left;
+  padding: 16px;
+}
+
+.App h2 {
+  margin: 0;
+  margin-bottom: 16px;
+}
+
+.App form button {
+  height: 32px;
+  margin-top: 16px;
+}
+
+.ReactDropZone {
+  border: 2px dashed #ccc;
+  margin-bottom: 16px;
+  padding: 16px;
+}
+
+.ReactDropZone p {
+  background-color: rgb(233, 233, 233);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.Error {
+  display: block;
+  color: red;
+  font-weight: bold;
+  padding: 8px 0;
+}
+
+.Info {
+  padding: 24px;
+  margin-top: 24px;
+  background-color: #e7ebec;
+}
+
+.Info p {
+  color: #268bd2;
+}
+
+.Info h1 {
+  font-size: 24px;
+}
+
+.Info h1,
+a {
+  color: #798f0b;
+  font-weight: 700;
+}
